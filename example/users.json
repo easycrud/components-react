@@ -1,0 +1,22 @@
+{
+  "tableName": "users",
+  "columns": [
+    {
+      "name": "username",
+      "type": "character varying",
+      "length": 256,
+      "primary": true,
+      "comment": "用户名"
+    },
+    {
+      "name": "password",
+      "type": "character varying",
+      "length": 512,
+      "nullable": false,
+      "comment": "密码"
+    }
+  ],
+  "options": {
+    "dropIfExists": true
+  }
+}
