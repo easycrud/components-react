@@ -5,12 +5,9 @@ import {CrudTable} from '../.';
 import * as users from './users.json';
 
 const App = () => {
-  const data = [{
-    username: '',
-  }];
   return (
     <div>
-      <CrudTable tableDef={users} dataSource={data} columns={[
+      <CrudTable tableDef={users} columns={[
         {
           dataIndex: 'username',
           title: '用户名',

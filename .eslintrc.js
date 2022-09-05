@@ -5,7 +5,7 @@ module.exports = {
   'rules': {
     'require-jsdoc': 'off',
     'semi': 'error',
-    'indent': ['error', 2],
+    // 'indent': ['error', 2],
     'max-len': ['error', 120],
   },
   'parser': '@typescript-eslint/parser',

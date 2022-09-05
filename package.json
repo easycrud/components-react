@@ -33,9 +33,9 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "components",
+  "name": "@easycrud/components-react",
   "author": "qiayang",
-  "module": "dist/components.esm.js",
+  "module": "dist/components-react.esm.js",
   "size-limit": [
     {
       "path": "dist/components.cjs.production.min.js",
@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@ant-design/pro-components": "^2.3.4",
-    "@easycrud/toolkits": "^0.1.0",
+    "@easycrud/toolkits": "^0.1.1",
     "@formily/antd": "^2.2.2",
     "@formily/core": "^2.2.2",
     "@formily/react": "^2.2.2",
