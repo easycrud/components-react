@@ -1,14 +1,9 @@
-import {parseContent, TableDefinition} from '@easycrud/toolkits';
-import {Table, TableProps} from 'antd';
-import type {ColumnType, TablePaginationConfig} from 'antd/es/table';
+import {parseContent} from '@easycrud/toolkits';
+import {Table} from 'antd';
+import type {TablePaginationConfig} from 'antd/es/table';
 import deepmerge from 'deepmerge';
 import React, {useEffect, useState} from 'react';
-
-type CrudTableProps = TableProps<Record<string, any>> &
-{
-  tableDef: TableDefinition,
-  api?: string,
-}
+import {CrudColumnType, CrudTableProps} from './types';
 
 async function request(
     api?: string,
@@ -35,8 +30,9 @@ async function request(
   return data.data;
 };
 
-function CrudTable(props: CrudTableProps) {
+function CrudTable(props: CrudTableProps<Record<string, any>>) {
   const {tableDef, api, columns, dataSource} = props;
+  let {onChange} = props;
   const table = parseContent(tableDef);
   const fields = table.columns;
   const fieldMap = fields.reduce<{
@@ -49,8 +45,8 @@ function CrudTable(props: CrudTableProps) {
     };
     return prev;
   }, {});
-  const columnMap = (columns as ColumnType<Record<string, any>>[] || []).reduce<{
-    [key: string]: ColumnType<Record<string, any>>
+  const columnMap = (columns || []).reduce<{
+    [key: string]: CrudColumnType<Record<string, any>>
   }>((prev, curr) => {
     if (curr.dataIndex) {
       prev[curr.dataIndex.toString()] = curr;
@@ -69,9 +65,15 @@ function CrudTable(props: CrudTableProps) {
     });
   }, [api, data]);
 
+  if (!onChange) {
+    onChange = (pagination, filters, sorter, extra, search) => request(api, pagination);
+  }
+  const tableProps = {
+    ...props,
+    onChange: (pagination, filters, sorter, extra) => onChange?.(pagination, filters, sorter, extra, {}),
+  };
   return <Table
-    onChange={(pagination) => request(api, pagination)}
-    {...props}
+    {...tableProps}
     dataSource={data}
     columns={Object.values(mergedColumns)} />;
 };
