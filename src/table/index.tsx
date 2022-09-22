@@ -1,13 +1,14 @@
 import {parseContent} from '@easycrud/toolkits';
-import {Table} from 'antd';
+import {Button, Col, Form, Input, Layout, Row, Table} from 'antd';
 import type {TablePaginationConfig} from 'antd/es/table';
 import deepmerge from 'deepmerge';
 import React, {useEffect, useState} from 'react';
 import {CrudColumnType, CrudTableProps} from './types';
 
 async function request(
-    api?: string,
+    api: string,
     pagination: TablePaginationConfig = {current: 1, pageSize: 20},
+    search?: Record<string, any>,
 ) {
   if (!api) {
     return;
@@ -23,6 +24,7 @@ async function request(
       data: {
         page: current,
         pageSize,
+        ...search,
       },
     }),
   });
@@ -48,16 +50,19 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
   const columnMap = (columns || []).reduce<{
     [key: string]: CrudColumnType<Record<string, any>>
   }>((prev, curr) => {
-    if (curr.dataIndex) {
-      prev[curr.dataIndex.toString()] = curr;
+    const key = curr.dataIndex?.toString() || curr.key;
+    if (key) {
+      prev[key] = curr;
     }
     return prev;
   }, {});
-  const mergedColumns = deepmerge(fieldMap, columnMap);
+  const mergedColumns = Object.values(deepmerge(fieldMap, columnMap))
+      .filter((column) => !column.hide);
 
-  const [data, setData] = useState(dataSource);
+  const dataSourceWithKey = dataSource?.map((record, i) => ({key: i, ...record}));
+  const [data, setData] = useState(dataSourceWithKey);
   useEffect(() => {
-    if (data) {
+    if (!api) {
       return;
     }
     request(api).then((data) => setData(data)).catch((err)=> {
@@ -65,17 +70,46 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
     });
   }, [api, data]);
 
-  if (!onChange) {
-    onChange = (pagination, filters, sorter, extra, search) => request(api, pagination);
+  if (api && !onChange) {
+    onChange = (pagination, _filters, _sorter, _extra, search) => request(api, pagination, search);
   }
-  const tableProps = {
-    ...props,
-    onChange: (pagination, filters, sorter, extra) => onChange?.(pagination, filters, sorter, extra, {}),
+
+  const [form] = Form.useForm();
+  const searchForm = mergedColumns.filter((c) => !c.search?.disable).map((column) => {
+    return <Col span={4} key={column.key || column.dataIndex}>
+      <Form.Item name={column.dataIndex} label={column.title}>
+        {column.search?.element || <Input />}
+      </Form.Item>
+    </Col>;
+  });
+  const onSearch = () => {
+    console.log(form.getFieldsValue());
+    onChange?.(
+        {current: 1, pageSize: 20}, {}, [],
+        {currentDataSource: [...data!], action: 'search'},
+        form.getFieldsValue(),
+    );
   };
-  return <Table
-    {...tableProps}
-    dataSource={data}
-    columns={Object.values(mergedColumns)} />;
+
+  return <Layout style={{background: '#fff'}}>
+    <Form form={form}>
+      <Row gutter={16}>{searchForm}</Row>
+      <Row>
+        <Col>
+          <Button type='primary' onClick={onSearch}>Search</Button>
+        </Col>
+      </Row>
+    </Form>
+    <Table
+      {...props}
+      onChange={
+        (pagination, filters, sorter, extra) =>
+          onChange?.(pagination, filters, sorter, extra, form.getFieldsValue())
+      }
+      dataSource={data}
+      columns={mergedColumns}
+      style={{marginTop: 20}} />
+  </Layout>;
 };
 
 CrudTable.Summary = Table.Summary;
