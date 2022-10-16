@@ -3,7 +3,6 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import {CrudTable} from '../.';
 import * as users from './users.json';
-import {Space} from 'antd';
 
 const App = () => {
   return (
@@ -11,19 +10,13 @@ const App = () => {
       <CrudTable tableDef={users} columns={
         [
           {
-            title: 'Action',
-            key: 'action',
+            key: 'password',
             search: {
               disable: true,
             },
-            render: (_, record) => (
-              <Space size="middle">
-                <a>Edit</a>
-                <a>Delete</a>
-              </Space>
-            )},
+          },
         ]
-      } dataSource={[{'username': 'testf', 'password': 'test'}]} />
+      } dataSource={[{'username': 'test', 'password': 'test'}]} />
     </div>
   );
 };

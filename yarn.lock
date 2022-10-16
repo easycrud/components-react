@@ -1121,9 +1121,8 @@
   "resolved" "https://registry.npmjs.org/@ctrl/tinycolor/-/tinycolor-3.4.1.tgz"
   "version" "3.4.1"
 
-"@easycrud/toolkits@^0.1.1":
-  "integrity" "sha512-GUzPfc0isQnAKLgfxYgMoGSR48TEPaDRQ5qiHluWC5eEsPZn3E8GHPch6kUySB/w7UEUoCafgqlnTaXts9eLvA=="
-  "resolved" "https://registry.npmjs.org/@easycrud/toolkits/-/toolkits-0.1.1.tgz"
+"@easycrud/toolkits@file:../toolkits":
+  "resolved" "file:../toolkits"
   "version" "0.1.1"
   dependencies:
     "commander" "^9.3.0"
@@ -2857,11 +2856,6 @@
   "resolved" "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz"
   "version" "2.20.3"
 
-"commander@^9.3.0":
-  "integrity" "sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw=="
-  "resolved" "https://registry.npmmirror.com/commander/-/commander-9.4.0.tgz"
-  "version" "9.4.0"
-
 "commondir@^1.0.1":
   "integrity" "sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg=="
   "resolved" "https://registry.npmjs.org/commondir/-/commondir-1.0.1.tgz"
@@ -3268,11 +3262,6 @@
     "is-callable" "^1.1.4"
     "is-date-object" "^1.0.1"
     "is-symbol" "^1.0.2"
-
-"esbuild-darwin-64@0.15.6":
-  "integrity" "sha512-BsfVt3usScAfGlXJiGtGamwVEOTM8AiYiw1zqDWhGv6BncLXCnTg1As+90mxWewdTZKq3iIy8s9g8CKkrrAXVw=="
-  "resolved" "https://registry.npmjs.org/esbuild-darwin-64/-/esbuild-darwin-64-0.15.6.tgz"
-  "version" "0.15.6"
 
 "esbuild@^0.15.1":
   "integrity" "sha512-sgLOv3l4xklvXzzczhRwKRotyrfyZ2i1fCS6PTOLPd9wevDPArGU8HFtHrHCOcsMwTjLjzGm15gvC8uxVzQf+w=="

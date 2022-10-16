@@ -1,39 +1,13 @@
 import {parseContent} from '@easycrud/toolkits';
-import {Button, Col, Form, Input, Layout, Row, Table} from 'antd';
-import type {TablePaginationConfig} from 'antd/es/table';
+import {Button, Col, Form, Input, Layout, Popconfirm, Row, Space, Table} from 'antd';
 import deepmerge from 'deepmerge';
 import React, {useEffect, useState} from 'react';
-import {CrudColumnType, CrudTableProps} from './types';
-
-async function request(
-    api: string,
-    pagination: TablePaginationConfig = {current: 1, pageSize: 20},
-    search?: Record<string, any>,
-) {
-  if (!api) {
-    return;
-  }
-
-  const {current, pageSize} = pagination;
-
-  const res = await fetch(api, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    mode: 'cors',
-    body: JSON.stringify({
-      data: {
-        page: current,
-        pageSize,
-        ...search,
-      },
-    }),
-  });
-  const {data} = await res.json();
-  return data.data;
-};
+import {del, get} from '../api/api';
+import {CrudColumnMap, CrudTableProps} from './types';
+import {QuestionCircleOutlined} from '@ant-design/icons';
 
 function CrudTable(props: CrudTableProps<Record<string, any>>) {
-  const {tableDef, api, columns, dataSource} = props;
+  const {tableDef, api, columns, dataSource, title, searchBar} = props;
   let {onChange} = props;
   const table = parseContent(tableDef);
   const fields = table.columns;
@@ -47,15 +21,33 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
     };
     return prev;
   }, {});
-  const columnMap = (columns || []).reduce<{
-    [key: string]: CrudColumnType<Record<string, any>>
-  }>((prev, curr) => {
+  const presetCols: CrudColumnMap = {
+    action: {
+      title: 'Action',
+      key: 'action',
+      search: {
+        disable: true,
+      },
+      render: (_, record) => (
+        <Space size="middle">
+          <Button type='link'>Edit</Button>
+          <Popconfirm title="Are you sure?"
+            icon={<QuestionCircleOutlined style={{color: 'red'}} />}
+            onConfirm={() => del(api || '', table.pk, record)}
+          >
+            <Button type='link'>Delete</Button>
+          </Popconfirm>
+        </Space>
+      )},
+  };
+  let columnMap = (columns || []).reduce<CrudColumnMap>((prev, curr) => {
     const key = curr.dataIndex?.toString() || curr.key;
     if (key) {
       prev[key] = curr;
     }
     return prev;
   }, {});
+  columnMap = deepmerge(presetCols, columnMap);
   const mergedColumns = Object.values(deepmerge(fieldMap, columnMap))
       .filter((column) => !column.hide);
 
@@ -65,13 +57,13 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
     if (!api) {
       return;
     }
-    request(api).then((data) => setData(data)).catch((err)=> {
+    get(api).then((data) => setData(data)).catch((err)=> {
       console.log(err);
     });
   }, [api, data]);
 
   if (api && !onChange) {
-    onChange = (pagination, _filters, _sorter, _extra, search) => request(api, pagination, search);
+    onChange = (pagination, _filters, _sorter, _extra, search) => get(api, pagination, search);
   }
 
   const [form] = Form.useForm();
@@ -92,14 +84,13 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
   };
 
   return <Layout style={{background: '#fff'}}>
-    <Form form={form}>
-      <Row gutter={16}>{searchForm}</Row>
-      <Row>
-        <Col>
-          <Button type='primary' onClick={onSearch}>Search</Button>
-        </Col>
-      </Row>
-    </Form>
+    {!searchBar?.hide && <Form form={form}>
+      <Row gutter={16}>{searchForm}<Button type='primary' onClick={onSearch}>Search</Button></Row>
+    </Form>}
+    <Row>
+      <Col span={1}><h1>{title || tableDef.tableName}</h1></Col>
+      <Col span={1} offset={22}><Button type='primary'>Create</Button></Col>
+    </Row>
     <Table
       {...props}
       onChange={

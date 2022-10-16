@@ -19,6 +19,10 @@ export type CrudColumnType<RecordType> = ColumnType<RecordType> & {
   }>
 }
 
+export type CrudColumnMap = {
+  [key: string]: CrudColumnType<Record<string, any>>
+}
+
 interface CrudTableCurrentDataSource<RecordType> {
   currentDataSource: RecordType[];
   action: TableAction | 'search';
@@ -27,6 +31,7 @@ interface CrudTableCurrentDataSource<RecordType> {
 export type CrudTableProps<RecordType> = Omit<TableProps<RecordType>, 'columns' | 'onChange'> &
 {
   tableDef: TableDefinition,
+  title?: string,
   api?: string,
   // Currently not support nested columns.
   columns?: CrudColumnType<RecordType>[],
@@ -37,5 +42,8 @@ export type CrudTableProps<RecordType> = Omit<TableProps<RecordType>, 'columns' 
     extra: CrudTableCurrentDataSource<RecordType>,
     search?: Record<string, any>
   ) => void,
+  searchBar?: {
+    hide: boolean
+  }
 }
 
