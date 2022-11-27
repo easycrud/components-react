@@ -2,10 +2,10 @@ import type {TablePaginationConfig} from 'antd/es/table';
 
 function getPkParams(pk: string[], record: Record<string, any>): string {
   if (pk.length === 1) {
-    return record[pk[0]]
+    return record[pk[0]];
   }
-  let params = pk.map(e => `${e}=${record[e]}`)
-  return '?' + params.join('&')
+  const params = pk.map((e) => `${e}=${record[e]}`);
+  return '?' + params.join('&');
 }
 
 export async function get(

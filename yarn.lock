@@ -1121,8 +1121,9 @@
   "resolved" "https://registry.npmjs.org/@ctrl/tinycolor/-/tinycolor-3.4.1.tgz"
   "version" "3.4.1"
 
-"@easycrud/toolkits@file:../toolkits":
-  "resolved" "file:../toolkits"
+"@easycrud/toolkits@^0.1.1":
+  "integrity" "sha512-GUzPfc0isQnAKLgfxYgMoGSR48TEPaDRQ5qiHluWC5eEsPZn3E8GHPch6kUySB/w7UEUoCafgqlnTaXts9eLvA=="
+  "resolved" "https://registry.npmmirror.com/@easycrud/toolkits/-/toolkits-0.1.1.tgz"
   "version" "0.1.1"
   dependencies:
     "commander" "^9.3.0"
@@ -2855,6 +2856,11 @@
   "integrity" "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
   "resolved" "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz"
   "version" "2.20.3"
+
+"commander@^9.3.0":
+  "integrity" "sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw=="
+  "resolved" "https://registry.npmmirror.com/commander/-/commander-9.4.0.tgz"
+  "version" "9.4.0"
 
 "commondir@^1.0.1":
   "integrity" "sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg=="

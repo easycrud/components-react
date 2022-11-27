@@ -2,12 +2,11 @@ import {parseContent} from '@easycrud/toolkits';
 import {Button, Col, Form, Input, Layout, Popconfirm, Row, Space, Table} from 'antd';
 import deepmerge from 'deepmerge';
 import React, {useEffect, useState} from 'react';
-import {del, get} from '../api/api';
 import {CrudColumnMap, CrudTableProps} from './types';
 import {QuestionCircleOutlined} from '@ant-design/icons';
 
 function CrudTable(props: CrudTableProps<Record<string, any>>) {
-  const {tableDef, api, columns, dataSource, title, searchBar} = props;
+  const {tableDef, requestData, deleteRow, columns, dataSource, title, searchBar} = props;
   let {onChange} = props;
   const table = parseContent(tableDef);
   const fields = table.columns;
@@ -33,7 +32,7 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
           <Button type='link'>Edit</Button>
           <Popconfirm title="Are you sure?"
             icon={<QuestionCircleOutlined style={{color: 'red'}} />}
-            onConfirm={() => del(api || '', table.pk, record)}
+            onConfirm={() => deleteRow(record)}
           >
             <Button type='link'>Delete</Button>
           </Popconfirm>
@@ -54,16 +53,16 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
   const dataSourceWithKey = dataSource?.map((record, i) => ({key: i, ...record}));
   const [data, setData] = useState(dataSourceWithKey);
   useEffect(() => {
-    if (!api) {
+    if (!requestData) {
       return;
     }
-    get(api).then((data) => setData(data)).catch((err)=> {
+    requestData().then((data) => setData(data)).catch((err)=> {
       console.log(err);
     });
-  }, [api, data]);
+  }, [requestData, data]);
 
-  if (api && !onChange) {
-    onChange = (pagination, _filters, _sorter, _extra, search) => get(api, pagination, search);
+  if (requestData && !onChange) {
+    onChange = (pagination, _filters, _sorter, _extra, search) => requestData(pagination, search);
   }
 
   const [form] = Form.useForm();

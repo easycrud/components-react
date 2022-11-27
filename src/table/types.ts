@@ -32,7 +32,8 @@ export type CrudTableProps<RecordType> = Omit<TableProps<RecordType>, 'columns' 
 {
   tableDef: TableDefinition,
   title?: string,
-  api?: string,
+  requestData: (pagination?: TablePaginationConfig, search?: Record<string, any>) => Promise<any>,
+  deleteRow: (record: Record<string, any>) => Promise<any>,
   // Currently not support nested columns.
   columns?: CrudColumnType<RecordType>[],
   onChange?: (
