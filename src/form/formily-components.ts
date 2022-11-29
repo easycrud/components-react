@@ -1,0 +1,48 @@
+import {
+  ArrayBase, ArrayTable, ArrayTabs, ArrayCards, ArrayCollapse, ArrayItems,
+  FormDialog, FormDrawer, Form, FormItem, FormLayout, FormStep, FormGrid,
+  FormTab, FormCollapse, FormButtonGroup, Input, Password, Cascader, Space,
+  PreviewText, Radio, Checkbox, Select, TreeSelect, Transfer, DatePicker,
+  TimePicker, NumberPicker, Switch, Upload, Submit, Reset, Editable, SelectTable,
+} from '@formily/antd';
+import {JSXComponent} from '@formily/core';
+const componets: {
+    [name: string]: JSXComponent
+} = {
+  'ArrayBase': ArrayBase,
+  'ArrayTable': ArrayTable,
+  'ArrayTabs': ArrayTabs,
+  'ArrayCards': ArrayCards,
+  'ArrayCollapse': ArrayCollapse,
+  'ArrayItems': ArrayItems,
+  'FormDialog': FormDialog,
+  'FormDrawer': FormDrawer,
+  'Form': Form,
+  'FormItem': FormItem,
+  'FormLayout': FormLayout,
+  'FormStep': FormStep,
+  'FormGrid': FormGrid,
+  'FormTab': FormTab,
+  'FormCollapse': FormCollapse,
+  'FormButtonGroup': FormButtonGroup,
+  'Input': Input,
+  'Password': Password,
+  'Cascader': Cascader,
+  'Space': Space,
+  'PreviewText': PreviewText,
+  'Radio': Radio,
+  'Checkbox': Checkbox,
+  'Select': Select,
+  'TreeSelect': TreeSelect,
+  'Transfer': Transfer,
+  'DatePicker': DatePicker,
+  'TimePicker': TimePicker,
+  'NumberPicker': NumberPicker,
+  'Switch': Switch,
+  'Upload': Upload,
+  'Submit': Submit,
+  'Reset': Reset,
+  'Editable': Editable,
+  'SelectTable': SelectTable,
+};
+export default componets;

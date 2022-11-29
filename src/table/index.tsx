@@ -1,12 +1,11 @@
 import {parseContent} from '@easycrud/toolkits';
-import {Button, Col, Form, Input, Layout, Popconfirm, Row, Space, Table} from 'antd';
+import {Button, Col, Form, Input, Layout, Row, Table} from 'antd';
 import deepmerge from 'deepmerge';
 import React, {useEffect, useState} from 'react';
 import {CrudColumnMap, CrudTableProps} from './types';
-import {QuestionCircleOutlined} from '@ant-design/icons';
 
 function CrudTable(props: CrudTableProps<Record<string, any>>) {
-  const {tableDef, requestData, deleteRow, columns, dataSource, title, searchBar} = props;
+  const {tableDef, requestData, columns, dataSource, searchBar} = props;
   let {onChange} = props;
   const table = parseContent(tableDef);
   const fields = table.columns;
@@ -20,33 +19,13 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
     };
     return prev;
   }, {});
-  const presetCols: CrudColumnMap = {
-    action: {
-      title: 'Action',
-      key: 'action',
-      search: {
-        disable: true,
-      },
-      render: (_, record) => (
-        <Space size="middle">
-          <Button type='link'>Edit</Button>
-          <Popconfirm title="Are you sure?"
-            icon={<QuestionCircleOutlined style={{color: 'red'}} />}
-            onConfirm={() => deleteRow(record)}
-          >
-            <Button type='link'>Delete</Button>
-          </Popconfirm>
-        </Space>
-      )},
-  };
-  let columnMap = (columns || []).reduce<CrudColumnMap>((prev, curr) => {
+  const columnMap = (columns || []).reduce<CrudColumnMap>((prev, curr) => {
     const key = curr.dataIndex?.toString() || curr.key;
     if (key) {
       prev[key] = curr;
     }
     return prev;
   }, {});
-  columnMap = deepmerge(presetCols, columnMap);
   const mergedColumns = Object.values(deepmerge(fieldMap, columnMap))
       .filter((column) => !column.hide);
 
@@ -74,7 +53,6 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
     </Col>;
   });
   const onSearch = () => {
-    console.log(form.getFieldsValue());
     onChange?.(
         {current: 1, pageSize: 20}, {}, [],
         {currentDataSource: [...data!], action: 'search'},
@@ -86,10 +64,6 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
     {!searchBar?.hide && <Form form={form}>
       <Row gutter={16}>{searchForm}<Button type='primary' onClick={onSearch}>Search</Button></Row>
     </Form>}
-    <Row>
-      <Col span={1}><h1>{title || tableDef.tableName}</h1></Col>
-      <Col span={1} offset={22}><Button type='primary'>Create</Button></Col>
-    </Row>
     <Table
       {...props}
       onChange={

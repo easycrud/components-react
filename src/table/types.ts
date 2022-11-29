@@ -30,10 +30,8 @@ interface CrudTableCurrentDataSource<RecordType> {
 
 export type CrudTableProps<RecordType> = Omit<TableProps<RecordType>, 'columns' | 'onChange'> &
 {
-  tableDef: TableDefinition,
-  title?: string,
-  requestData: (pagination?: TablePaginationConfig, search?: Record<string, any>) => Promise<any>,
-  deleteRow: (record: Record<string, any>) => Promise<any>,
+  tableDef: Partial<TableDefinition>,
+  requestData?: (pagination?: TablePaginationConfig, search?: Record<string, any>) => Promise<any>,
   // Currently not support nested columns.
   columns?: CrudColumnType<RecordType>[],
   onChange?: (
