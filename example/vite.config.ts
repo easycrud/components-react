@@ -11,4 +11,11 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@easycrud/toolkits'],
   },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+      },
+    },
+  },
 });

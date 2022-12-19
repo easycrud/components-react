@@ -37,7 +37,13 @@ const App = () => {
           },
         ]
       } dataSource={[{'username': 'test', 'password': 'test'}]} />
-      <CrudForm tableDef={users} />
+      <CrudForm tableDef={users} schema={{
+        'properties': {
+          'password': {
+            'x-component': 'Password',
+          },
+        },
+      }} />
     </div>
   );
 };
