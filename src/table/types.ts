@@ -14,7 +14,7 @@ import {FilterValue, SorterResult, TableAction} from 'antd/es/table/interface';
 export type CrudColumnType<RecordType> = ColumnType<RecordType> & {
   hide?: boolean,
   search?: Partial<{
-    disable: boolean,
+    enable: boolean,
     element: JSX.Element
   }>
 }

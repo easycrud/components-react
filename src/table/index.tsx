@@ -29,23 +29,25 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
   const mergedColumns = Object.values(deepmerge(fieldMap, columnMap))
       .filter((column) => !column.hide);
 
-  const dataSourceWithKey = dataSource?.map((record, i) => ({key: i, ...record}));
-  const [data, setData] = useState(dataSourceWithKey);
+  const [data, setData] = useState<Object[]>([]);
   useEffect(() => {
     if (!requestData) {
+      const dataSourceWithKey = dataSource?.map((record, i) => ({key: i, ...record}));
+      setData(dataSourceWithKey || []);
       return;
     }
     requestData().then((data) => setData(data)).catch((err)=> {
       console.log(err);
     });
-  }, [requestData, data]);
+  }, [requestData, dataSource]);
 
   if (requestData && !onChange) {
     onChange = (pagination, _filters, _sorter, _extra, search) => requestData(pagination, search);
   }
 
   const [form] = Form.useForm();
-  const searchForm = mergedColumns.filter((c) => !c.search?.disable).map((column) => {
+  const searchColumns = mergedColumns.filter((c) => c.search?.enable);
+  const searchForm = searchColumns.map((column) => {
     return <Col span={4} key={column.key || column.dataIndex}>
       <Form.Item name={column.dataIndex} label={column.title}>
         {column.search?.element || <Input />}
@@ -61,7 +63,7 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
   };
 
   return <Layout style={{background: '#fff'}}>
-    {!searchBar?.hide && <Form form={form}>
+    {!searchBar?.hide && searchColumns.length > 0 && <Form form={form}>
       <Row gutter={16}>{searchForm}<Button type='primary' onClick={onSearch}>Search</Button></Row>
     </Form>}
     <Table

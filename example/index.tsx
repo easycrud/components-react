@@ -7,6 +7,13 @@ import {Button, Popconfirm, Space} from 'antd';
 import {QuestionCircleOutlined} from '@ant-design/icons';
 
 const App = () => {
+  const [data, setData] = React.useState<Object[]>([]);
+  React.useEffect(() => {
+    setTimeout(() => {
+      setData([{username: 'test', password: 'test'}]);
+    }, 1000);
+  }, []);
+
   return (
     <div>
       <CrudTable tableDef={users} columns={
@@ -36,7 +43,7 @@ const App = () => {
             ),
           },
         ]
-      } dataSource={[{'username': 'test', 'password': 'test'}]} />
+      } dataSource={data} />
       <CrudForm tableDef={users} schema={{
         'properties': {
           'password': {
