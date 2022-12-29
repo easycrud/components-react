@@ -28,10 +28,15 @@ interface CrudTableCurrentDataSource<RecordType> {
   action: TableAction | 'search';
 }
 
+export interface TableData<RecordType> {
+  data: RecordType[],
+  pagination: TablePaginationConfig
+}
+
 export type CrudTableProps<RecordType> = Omit<TableProps<RecordType>, 'columns' | 'onChange'> &
 {
   tableDef: Partial<TableDefinition>,
-  requestData?: (pagination?: TablePaginationConfig, search?: Record<string, any>) => Promise<any>,
+  requestData?: (pagination?: TablePaginationConfig, search?: Record<string, any>) => Promise<TableData<RecordType>>,
   // Currently not support nested columns.
   columns?: CrudColumnType<RecordType>[],
   onChange?: (

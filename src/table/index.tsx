@@ -2,13 +2,14 @@ import {parseContent} from '@easycrud/toolkits';
 import {Button, Col, Form, Input, Layout, Row, Table} from 'antd';
 import deepmerge from 'deepmerge';
 import React, {useEffect, useState} from 'react';
-import {CrudColumnMap, CrudTableProps} from './types';
+import {CrudColumnMap, CrudTableProps, TableData} from './types';
 
 function CrudTable(props: CrudTableProps<Record<string, any>>) {
-  const {tableDef, requestData, columns, dataSource, searchBar} = props;
+  const {tableDef, requestData, columns, dataSource, searchBar, pagination} = props;
   let {onChange} = props;
   const table = parseContent(tableDef);
   const fields = table.columns;
+  // convert table definition schema to map of antd table columns
   const fieldMap = fields.reduce<{
     [key: string]: Record<string, any>
   }>((prev, curr) => {
@@ -19,6 +20,7 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
     };
     return prev;
   }, {});
+  // merge table definition schema with user defined columns by column name
   const columnMap = (columns || []).reduce<CrudColumnMap>((prev, curr) => {
     const key = curr.dataIndex?.toString() || curr.key;
     if (key) {
@@ -29,22 +31,33 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
   const mergedColumns = Object.values(deepmerge(fieldMap, columnMap))
       .filter((column) => !column.hide);
 
-  const [data, setData] = useState<Object[]>([]);
+  // Load table data
+  const [data, setData] = useState<TableData<Record<string, any>>>({
+    data: [],
+    pagination: {},
+  });
   useEffect(() => {
     if (!requestData) {
+      // if no requestData function is provided, use dataSource as data
       const dataSourceWithKey = dataSource?.map((record, i) => ({key: i, ...record}));
-      setData(dataSourceWithKey || []);
+      setData({
+        data: dataSourceWithKey || [],
+        pagination: pagination || {},
+      });
       return;
     }
-    requestData().then((data) => setData(data)).catch((err)=> {
+    // if requestData function is provided, use it to load data
+    requestData().then((res) => setData(res)).catch((err)=> {
       console.log(err);
     });
-  }, [requestData, dataSource]);
+  }, [requestData, dataSource, pagination]);
 
   if (requestData && !onChange) {
+    // set onChange function if onChange function is not provided
     onChange = (pagination, _filters, _sorter, _extra, search) => requestData(pagination, search);
   }
 
+  // setup search bar and search function
   const [form] = Form.useForm();
   const searchColumns = mergedColumns.filter((c) => c.search?.enable);
   const searchForm = searchColumns.map((column) => {
@@ -56,8 +69,8 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
   });
   const onSearch = () => {
     onChange?.(
-        {current: 1, pageSize: 20}, {}, [],
-        {currentDataSource: [...data!], action: 'search'},
+        {...data.pagination, current: 1}, {}, [],
+        {currentDataSource: [...data.data!], action: 'search'},
         form.getFieldsValue(),
     );
   };
@@ -72,7 +85,8 @@ function CrudTable(props: CrudTableProps<Record<string, any>>) {
         (pagination, filters, sorter, extra) =>
           onChange?.(pagination, filters, sorter, extra, form.getFieldsValue())
       }
-      dataSource={data}
+      dataSource={data.data}
+      pagination={data.pagination}
       columns={mergedColumns}
       style={{marginTop: 20}} />
   </Layout>;
